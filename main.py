@@ -6,16 +6,24 @@ from interpreter import Interpreter
 def main():
     while True:
         try:
-            text = input("Ввод> ")
+            name = input("Укажите директорию файла> ")
+            try:
+                file = open(name)
+            except FileNotFoundError:
+                print('File not found')
+                continue
         except EOFError:
             break
-        if not text:
-            continue
+        text = file.read()
+        file.close()
 
         lexer = Lexer(text)
         parser = Parser(lexer)
-        interpr = Interpreter(parser)
-        interpr.interpret()
+        interpreter = Interpreter(parser)
+        interpreter.interpret()
+        print('GLOBAL SCOPE:')
+        for key, value in interpreter.GLOBAL_SCOPE.items():
+            print(f' {key}: {value}')
 
 
 if __name__ == '__main__':

@@ -43,6 +43,15 @@ class Lexer(object):
         else:
             return Token(INTEGER_CONST, result)
 
+    def id(self):
+        builtins = {}
+        result = ''
+        while self.current_char is not None and \
+                self.current_char.isalnum() or self.current_char == '_':
+            result += self.current_char
+            self.advance()
+        return builtins.get(result, Token(ID, result))
+
     def get_next_token(self):
         while self.current_char is not None:
             if self.current_char.isspace():
@@ -64,6 +73,13 @@ class Lexer(object):
             if self.current_char == ')':
                 self.advance()
                 return Token(R_PAREN, ')')
+
+            if self.current_char.isalpha() or self.current_char == '_':
+                return self.id()
+
+            if self.current_char == '=':
+                self.advance()
+                return Token(ASSIGN, '=')
 
             raise_error(self.__class__.__name__, INV_CHAR,
                         char_pos=self.pos, char=self.current_char)
